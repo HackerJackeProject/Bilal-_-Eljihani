@@ -30,6 +30,7 @@ featuredCards.forEach(card => {
 // Smooth Section Reveal on Scroll
 document.addEventListener('DOMContentLoaded', () => {
     const sections = document.querySelectorAll('section');
+    let isScrolling = false;
 
     // Set Initial Transition Styles
     sections.forEach(section => {
@@ -38,13 +39,20 @@ document.addEventListener('DOMContentLoaded', () => {
         section.style.transform = 'translateY(50px)';
     });
 
+    // Reveal Sections Function with Debounced Scroll
     const revealSections = () => {
-        sections.forEach(section => {
-            if (section.getBoundingClientRect().top < window.innerHeight * 0.8) {
-                section.style.opacity = 1;
-                section.style.transform = 'translateY(0)';
-            }
-        });
+        if (!isScrolling) {
+            isScrolling = true;
+            requestAnimationFrame(() => {
+                sections.forEach(section => {
+                    if (section.getBoundingClientRect().top < window.innerHeight * 0.8) {
+                        section.style.opacity = 1;
+                        section.style.transform = 'translateY(0)';
+                    }
+                });
+                isScrolling = false;
+            });
+        }
     };
 
     window.addEventListener('scroll', revealSections);
@@ -53,6 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Interactive Profile Image Click Effect
 profileImage.addEventListener('click', () => {
+    profileImage.style.transition = 'all 0.3s ease';
+    profileImage.style.transform = 'scale(1.05)';
+    profileImage.style.opacity = '0.8';
+    
+    setTimeout(() => {
+        profileImage.style.transform = 'scale(1)';
+        profileImage.style.opacity = '1';
+    }, 300);
+
     alert('Profile image clicked! Stay curious.');
 });
 
@@ -69,6 +86,7 @@ function addFeaturedCard(title, imgUrl, description) {
         <div class="cdesc">${description}</div>
     `;
 
+    // Apply Hover Effects Dynamically
     applyHoverEffect(card, 'translateY(-5px)');
     cardContainer.appendChild(card);
 }
@@ -79,3 +97,12 @@ addFeaturedCard(
     'https://via.placeholder.com/350x200',
     'Learn advanced JavaScript techniques for better performance and usability.'
 );
+
+// Adding More Cards Dynamically (Optional)
+setTimeout(() => {
+    addFeaturedCard(
+        'Ethical Hacking & Machine Learning',
+        'https://via.placeholder.com/350x200',
+        'Explore how machine learning enhances ethical hacking and cybersecurity.'
+    );
+}, 5000);
